@@ -82,6 +82,26 @@ func main() {
 		return
 	}
 
+	var choice int
+	if len(issues) == 1 {
+		choice = 0
+	} else {
+		choice = selectIssue(issues) - 1
+	}
+
+	selected := issues[choice]
+	branchName := formatBranchName(selected.Key, selected.Fields.Summary)
+	fmt.Printf("Creating branch: %s\n", branchName)
+
+	cmd := exec.Command("git", "checkout", "-b", branchName)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		log.Fatalf("failed to create git branch: %v", err)
+	}
+}
+
+func selectIssue(issues []JiraIssue) int {
 	fmt.Println("Select a Jira task:")
 	for i, issue := range issues {
 		updated, err := parseJiraTime(issue.Fields.Updated)
@@ -104,16 +124,7 @@ func main() {
 		log.Fatal("Invalid selection")
 	}
 
-	selected := issues[choice-1]
-	branchName := formatBranchName(selected.Key, selected.Fields.Summary)
-	fmt.Printf("Creating branch: %s\n", branchName)
-
-	cmd := exec.Command("git", "checkout", "-b", branchName)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	if err := cmd.Run(); err != nil {
-		log.Fatalf("failed to create git branch: %v", err)
-	}
+	return choice
 }
 
 func parseJiraTime(timeStr string) (time.Time, error) {
