@@ -91,7 +91,8 @@ func main() {
 
 	selected := issues[choice]
 	branchName := formatBranchName(selected.Key, selected.Fields.Summary)
-	branchName = getAvailableBranchName(branchName)
+	branchName = ensureAvailableBranchName(branchName)
+
 	fmt.Printf("Creating branch: %s\n", branchName)
 
 	cmd := exec.Command("git", "checkout", "-b", branchName)
@@ -204,4 +205,23 @@ func getAvailableBranchName(baseName string) string {
 func branchExists(name string) bool {
 	err := exec.Command("git", "show-ref", "--verify", "--quiet", "refs/heads/"+name).Run()
 	return err == nil
+}
+
+func ensureAvailableBranchName(branchName string) string {
+	if !branchExists(branchName) {
+		return branchName
+	}
+
+	// If the initial branch name is already taken, ask for confirmation.
+	nextName := getAvailableBranchName(branchName)
+
+	fmt.Printf("Branch '%s' already exists. Create '%s' instead? [Y/n]: ", branchName, nextName)
+	reader := bufio.NewReader(os.Stdin)
+	input, _ := reader.ReadString('\n')
+	input = strings.TrimSpace(input)
+	if input != "" && strings.ToLower(input) != "y" {
+		fmt.Println("Cancelled.")
+		os.Exit(0)
+	}
+	return nextName
 }
