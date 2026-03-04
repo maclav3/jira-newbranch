@@ -12,8 +12,10 @@ tasks:
   install:
     vars:
       DEST: '{{.DEST | default "~/bin/"}}'
+      VERSION:
+        sh: git describe --tags --always --dirty 2>/dev/null || echo "v0.0.0-devel"
     cmds:
-      - go build -o jira-newbranch main.go
+      - go build -ldflags "-X main.version={{.VERSION}}" -o jira-newbranch main.go
       - mkdir -p {{.DEST}}
       - mv jira-newbranch {{.DEST}}
 

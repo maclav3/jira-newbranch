@@ -1,16 +1,28 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"os"
+	"runtime/debug"
 
 	"github.com/maclav3/jira-newbranch/internal/branch"
 	"github.com/maclav3/jira-newbranch/internal/jira"
 	"github.com/maclav3/jira-newbranch/internal/ui"
 )
 
+var version = "v0.0.0-devel"
+
 func main() {
+	showVersion := flag.Bool("v", false, "print version")
+	flag.Parse()
+
+	if *showVersion {
+		fmt.Printf("jira-newbranch version %s\n", getVersion())
+		os.Exit(0)
+	}
+
 	if !branch.IsGitRepo() {
 		log.Fatal("Current directory is not a git repository")
 	}
@@ -54,4 +66,11 @@ func main() {
 	if err := branch.CheckoutNewBranch(branchName); err != nil {
 		log.Fatalf("failed to create git branch: %v", err)
 	}
+}
+
+func getVersion() string {
+	if info, ok := debug.ReadBuildInfo(); ok && info.Main.Version != "(devel)" {
+		return info.Main.Version
+	}
+	return version
 }

@@ -65,6 +65,8 @@ Run the tool from within any git repository:
 jira-newbranch
 ```
 
+- Pass `-v` to print the version.
+
 1. The tool will verify you are in a git repository.
 2. It will fetch your active Jira tasks.
 3. Select a task by entering its number.
