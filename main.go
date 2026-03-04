@@ -91,6 +91,7 @@ func main() {
 
 	selected := issues[choice]
 	branchName := formatBranchName(selected.Key, selected.Fields.Summary)
+	branchName = getAvailableBranchName(branchName)
 	fmt.Printf("Creating branch: %s\n", branchName)
 
 	cmd := exec.Command("git", "checkout", "-b", branchName)
@@ -175,4 +176,32 @@ func formatBranchName(key, summary string) string {
 		return key
 	}
 	return fmt.Sprintf("%s-%s", key, suffix)
+}
+
+func getAvailableBranchName(baseName string) string {
+	candidate := baseName
+	counter := 1
+
+	// Check if baseName already has a numeric suffix (e.g., "branch-name-2").
+	// If it does, extract the base name and the counter to correctly increment it.
+
+	re := regexp.MustCompile(`^(.*)-(\d+)$`)
+	matches := re.FindStringSubmatch(baseName)
+	if len(matches) == 3 {
+		baseName = matches[1]
+		fmt.Sscanf(matches[2], "%d", &counter)
+	}
+
+	for {
+		if !branchExists(candidate) {
+			return candidate
+		}
+		counter++
+		candidate = fmt.Sprintf("%s-%d", baseName, counter)
+	}
+}
+
+func branchExists(name string) bool {
+	err := exec.Command("git", "show-ref", "--verify", "--quiet", "refs/heads/"+name).Run()
+	return err == nil
 }
