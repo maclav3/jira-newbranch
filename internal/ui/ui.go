@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/maclav3/jira-newbranch/internal/jira"
@@ -34,4 +35,12 @@ func SelectIssue(issues []jira.JiraIssue) int {
 	}
 
 	return choice
+}
+
+func Confirm(message string) bool {
+	fmt.Printf("%s [Y/n]: ", message)
+	reader := bufio.NewReader(os.Stdin)
+	input, _ := reader.ReadString('\n')
+	input = strings.TrimSpace(input)
+	return input == "" || strings.ToLower(input) == "y"
 }

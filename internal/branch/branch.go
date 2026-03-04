@@ -1,12 +1,13 @@
 package branch
 
 import (
-	"bufio"
 	"fmt"
 	"os"
 	"os/exec"
 	"regexp"
 	"strings"
+
+	"github.com/maclav3/jira-newbranch/internal/ui"
 )
 
 func FormatBranchName(key, summary string) string {
@@ -74,22 +75,18 @@ func BranchExists(name string) bool {
 	return err == nil
 }
 
-func EnsureAvailableBranchName(branchName string) string {
+func EnsureAvailableBranchName(branchName string) (string, bool) {
 	// If the initial branch name is already taken, ask for confirmation.
 	if !BranchExists(branchName) {
-		return branchName
+		return branchName, true
 	}
 
 	nextName := GetAvailableBranchName(branchName)
-	fmt.Printf("Branch '%s' already exists. Create '%s' instead? [Y/n]: ", branchName, nextName)
-	reader := bufio.NewReader(os.Stdin)
-	input, _ := reader.ReadString('\n')
-	input = strings.TrimSpace(input)
-	if input != "" && strings.ToLower(input) != "y" {
-		fmt.Println("Cancelled.")
-		os.Exit(0)
+	msg := fmt.Sprintf("Branch '%s' already exists. Create '%s' instead?", branchName, nextName)
+	if !ui.Confirm(msg) {
+		return "", false
 	}
-	return nextName
+	return nextName, true
 }
 
 func IsGitRepo() bool {

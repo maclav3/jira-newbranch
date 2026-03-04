@@ -43,7 +43,11 @@ func main() {
 
 	selected := issues[choice]
 	branchName := branch.FormatBranchName(selected.Key, selected.Fields.Summary)
-	branchName = branch.EnsureAvailableBranchName(branchName)
+	branchName, accepted := branch.EnsureAvailableBranchName(branchName)
+	if !accepted {
+		fmt.Println("Cancelled.")
+		os.Exit(0)
+	}
 
 	fmt.Printf("Creating branch: %s\n", branchName)
 
