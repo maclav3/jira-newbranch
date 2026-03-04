@@ -8,3 +8,16 @@ tasks:
   fmt:
     cmds:
       - go fmt ./...
+
+  install:
+    vars:
+      DEST: '{{.DEST | default "~/bin/"}}'
+    cmds:
+      - go build -o jira-newbranch main.go
+      - mkdir -p {{.DEST}}
+      - mv jira-newbranch {{.DEST}}
+
+  go-install:
+    desc: "Installs the binary using standard go install"
+    cmds:
+      - go install .

@@ -21,11 +21,33 @@ This project was **vibe-coded** with the help of **Junie**, an autonomous progra
 
 ## Installation
 
+### Using Go
+
+The simplest way is to use `go install`:
+
+```bash
+go install github.com/maclav3/jira-newbranch@latest
+```
+
+### Manual build
+Or build it manually:
+
 ```bash
 go build -o jira-newbranch main.go
 # Optionally move it to your PATH
 mv jira-newbranch /usr/local/bin/
 ```
+
+### Installation with Task
+
+Or use the `install` task to build and install the executable to a specific path (defaults to `~/bin/`):
+
+```bash
+task install
+# Or specify a custom destination
+task install DEST=/usr/local/bin/
+```
+
 
 ## Configuration
 
@@ -50,10 +72,24 @@ jira-newbranch
 
 ## Testing
 
-To run the unit tests for branch naming and time parsing logic:
+To run the unit tests for branch naming and time parsing logic, you can use `go test`:
 
 ```bash
 go test -v ./...
+```
+
+Or use the provided `Taskfile`:
+
+```bash
+task test
+```
+
+## Formatting
+
+To format all Go files in the project:
+
+```bash
+task fmt
 ```
 
 ## CI/CD and Versioning
