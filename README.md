@@ -55,3 +55,18 @@ To run the unit tests for branch naming and time parsing logic:
 ```bash
 go test -v ./...
 ```
+
+## CI/CD and Versioning
+
+This project uses GitHub Actions for continuous integration and automated versioning.
+
+### Automated Tagging
+On every push to the `main` branch, the CI pipeline:
+1. Runs all tests.
+2. If tests pass, it automatically creates a new SemVer-compatible git tag (e.g., `v1.0.1`).
+
+### Bumping Versions
+By default, the pipeline performs a **patch** bump. You can trigger a **minor** or **major** bump using the following methods:
+
+1. **Commit Messages**: Include `#major`, `#minor`, or `#patch` in your commit message.
+2. **Manual Dispatch**: Go to the **Actions** tab in GitHub, select the **CI/CD** workflow, and use the **Run workflow** button to choose the bump level.
