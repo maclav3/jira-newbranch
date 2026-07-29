@@ -30,6 +30,11 @@ func TestFormatBranchName(t *testing.T) {
 			summary:  "to and or be for with",
 			expected: "A-1",
 		},
+		{
+			key:      "PRJ-4567",
+			summary:  "[BE] [LOL] [Lots of tags] [Hehe-hehe] This summary has many tags lol",
+			expected: "PRJ-4567-this-summary-many-tags",
+		},
 	}
 
 	for _, tt := range tests {

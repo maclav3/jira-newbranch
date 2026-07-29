@@ -23,12 +23,18 @@ func FormatBranchName(key, summary string) string {
 		"the":  {},
 		"a":    {},
 		"an":   {},
+		"has":  {},
 	}
 
-	// Clean summary: lowercase, remove non-alphanumeric, split into words
+	// Cleanup summary: lowercase, discard all [tags], remove non-alphanumeric, split into words
 	summary = strings.ToLower(summary)
+
+	tags := regexp.MustCompile(`\[.+?\]`)
+	summary = tags.ReplaceAllString(summary, " ")
+
 	reg := regexp.MustCompile(`[^a-z0-9\s]+`)
 	summary = reg.ReplaceAllString(summary, " ")
+
 	words := strings.Fields(summary)
 
 	var filtered []string
