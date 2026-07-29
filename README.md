@@ -2,8 +2,6 @@
 
 A simple CLI application that creates a git branch with a name based on the Jira task you are currently working on.
 
-This project was **vibe-coded** with the help of **Junie**, an autonomous programmer by JetBrains.
-
 ## Features
 
 - **Jira Integration**: Fetches tasks assigned to you that are not "Done".
